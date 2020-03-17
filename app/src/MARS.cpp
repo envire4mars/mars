@@ -182,34 +182,29 @@ namespace mars {
       coreConfigFile = configDir+"/core_libs.txt";
       plugin_config = fopen(coreConfigFile.c_str() , "r");
       if(plugin_config) {
+        fprintf(stderr, "MARS::loadCoreLibs: load core libs from core_libs.txt\n");
         fclose(plugin_config);
         libManager->loadConfigFile(coreConfigFile);
       } else {
-        fprintf(stderr, "Loading default core libraries...\n");
+        fprintf(stderr, "MARS::loadCoreLibs: Loading default core libraries...\n");
         libManager->loadLibrary("data_broker");
         libManager->loadLibrary("mars_sim");
-        //libManager->loadLibrary("mars_scene_loader");
-        //libManager->loadLibrary("mars_entity_factory");
-        //libManager->loadLibrary("mars_smurf");
-        //libManager->loadLibrary("mars_smurf_loader");
+        libManager->loadLibrary("mars_scene_loader");
+        libManager->loadLibrary("mars_entity_factory");
+        libManager->loadLibrary("mars_smurf");
+        libManager->loadLibrary("mars_smurf_loader");
         if(!noGUI) {
           libManager->loadLibrary("main_gui");
           libManager->loadLibrary("mars_graphics");
           libManager->loadLibrary("mars_gui");
           libManager->loadLibrary("entity_view");
         }
-        // TODO_A: why not add envire_manager as plugin over configuration files
-        libManager->loadLibrary("envire_managers");
-        libManager->loadLibrary("envire_smurf_loader");
-        libManager->loadLibrary("envire_graphics");
-        libManager->loadLibrary("mars_scene_loader");
-
       }
     }
 
     void MARS::loadAdditionalLibs() {
       {
-        fprintf(stderr, "Loading default additional libraries...\n");
+        fprintf(stderr, "MARS::loadAdditionalLibs: Loading default additional libraries...\n");
         // loading errors will be silent for the following optional libraries
         if(!noGUI) {
           libManager->loadLibrary("log_console", NULL, true);
