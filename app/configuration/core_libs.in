@@ -1,10 +1,10 @@
 data_broker
-main_gui
-mars_graphics
 mars_sim
-mars_scene_loader
-mars_gui
 mars_entity_factory
-mars_smurf
-mars_smurf_loader
-entity_view
+mars_scene_loader
+main_gui
+mars_gui
+mars_graphics
+envire_managers
+envire_smurf_loader
+envire_graphics
