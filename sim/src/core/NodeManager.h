@@ -43,7 +43,7 @@ namespace mars {
     class SimJoint;
     class SimNode;
 
-    typedef std::map<interfaces::NodeId, SimNode*> NodeMap;
+    typedef std::map<interfaces::NodeId, std::shared_ptr<SimNode>> NodeMap;
 
     /**
      * The declaration of the NodeManager class.
@@ -99,8 +99,8 @@ namespace mars {
       virtual void setContactParamMotion1(interfaces::NodeId id, interfaces::sReal motion);
       virtual void addNodeSensor(interfaces::BaseNodeSensor *sensor);
       virtual void reloadNodeSensor(interfaces::BaseNodeSensor *sensor);
-      virtual SimNode* getSimNode(interfaces::NodeId id);
-      virtual const SimNode* getSimNode(interfaces::NodeId id) const;
+      virtual std::shared_ptr<mars::sim::SimNode> getSimNode(interfaces::NodeId id);
+      virtual const std::shared_ptr<mars::sim::SimNode> getSimNode(interfaces::NodeId id) const;
       virtual void reloadNodes(bool reloadGraphics);
       virtual const utils::Vector setReloadExtent(interfaces::NodeId id, const utils::Vector &ext);
       virtual void setReloadPosition(interfaces::NodeId id, const utils::Vector &pos);
@@ -220,7 +220,7 @@ namespace mars {
       void pushToUpdate(SimNode* node);
 
       void printNodeMasses(bool onlysum);
-      void changeNode(SimNode *editedNode, interfaces::NodeData *nodeS);
+      void changeNode(std::shared_ptr<SimNode> editedNode, interfaces::NodeData *nodeS);
 
       // for passing parameters to the recursiveHelper.
       struct Params

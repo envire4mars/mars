@@ -33,16 +33,16 @@ namespace mars {
   
     using namespace mars::interfaces;
 
-    PhysicsInterface* PhysicsMapper::newWorldPhysics(ControlCenter *control) {
-      return (PhysicsInterface*) (new WorldPhysics(control));
+    std::shared_ptr<PhysicsInterface> PhysicsMapper::newWorldPhysics(ControlCenter *control) {
+      return std::make_shared<PhysicsInterface>(WorldPhysics(control));
     }
 
-    NodeInterface* PhysicsMapper::newNodePhysics(PhysicsInterface *worldPhysics) {
-      return (NodeInterface*) (new NodePhysics(worldPhysics));
+    std::shared_pt<NodeInterface> PhysicsMapper::newNodePhysics(std::shared_ptr<PhysicsInterface> worldPhysics) {
+      return std::make_shared<NodeInterface>(NodePhysics(worldPhysics));
     }
 
-    JointInterface* PhysicsMapper::newJointPhysics(PhysicsInterface *worldPhysics) {
-      return (JointInterface*) (new JointPhysics(worldPhysics));
+    std::shared_ptr<JointInterface> PhysicsMapper::newJointPhysics(std::shared_ptr<PhysicsInterface> worldPhysics) {
+      return std::make_shared<JointInterface>(JointPhysics(worldPhysics));
     }
 
   } // end of namespace sim

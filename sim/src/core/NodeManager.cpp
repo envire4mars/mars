@@ -243,7 +243,7 @@ namespace mars {
       // create the physical node data
       if(! (nodeS->noPhysical)){
         // create an interface object to the physics
-        NodeInterface *newNodeInterface = PhysicsMapper::newNodePhysics(control->sim->getPhysics());
+        std::shared_ptr<NodeInterface> newNodeInterface = PhysicsMapper::newNodePhysics(control->sim->getPhysics());
         if (!newNodeInterface->createNode(nodeS)) {
           // if no node was created in physics
           // delete the objects
@@ -454,7 +454,7 @@ namespace mars {
         return;
       }
 
-      SimNode *editedNode = iter->second;
+      std::shared_ptr<SimNode> editedNode = iter->second;
       NodeData sNode = editedNode->getSNode();
       if(changes & EDIT_NODE_POS) {
         if(changes & EDIT_NODE_MOVE_ALL) {
@@ -665,7 +665,7 @@ namespace mars {
 
     void NodeManager::removeNode(NodeId id, bool lock, bool clearGraphics) {
       NodeMap::iterator iter; //NodeMap is a map containing an id and a SimNode
-      SimNode *tmpNode = 0;
+      std::shared_ptr<SimNode> tmpNode = 0;
 
       if(lock) iMutex.lock();
 
@@ -899,11 +899,11 @@ namespace mars {
     /**
      *\brief Returns a pointer to the SimNode Object.
      */
-    SimNode *NodeManager::getSimNode(NodeId id) {
-      return const_cast<SimNode*>(static_cast<const NodeManager*>(this)->getSimNode(id));
+    std::shared_ptr<mars::sim::SimNode> NodeManager::getSimNode(mars::interfaces::NodeId id) {
+      return  const_pointer_cast<mars::sim::SimNode>(static_cast<const NodeManager*>(this)->getSimNode(id));
     }
 
-    const SimNode* NodeManager::getSimNode(NodeId id) const {
+    const std::shared_ptr<mars::sim::SimNode> NodeManager::getSimNode(NodeId id) const {
       MutexLocker locker(&iMutex);
       NodeMap::const_iterator iter = simNodes.find(id);
       if (iter != simNodes.end())
@@ -927,7 +927,7 @@ namespace mars {
                                          const Quaternion *rotate) {
       NodeMap::iterator iter;
       NodeData tmpNode, tmpNode2;
-      SimNode* nextNode;
+      std::shared_ptr<SimNode>  nextNode;
 
       // TODO: doesn't this function need locking? no
       tmpNode = node.getSNode();
@@ -955,7 +955,7 @@ namespace mars {
       NodeMap::iterator iter;
       std::vector<SimJoint*>::iterator jter;
       std::vector<SimJoint*>::iterator jter2;
-      SimNode* nextNode;
+      std::shared_ptr<SimNode>  nextNode;
 
       iMutex.lock();
       for (iter = nodes->begin(); iter != nodes->end(); iter++) {
@@ -992,7 +992,7 @@ namespace mars {
                                       NodeMap *nodes,
                                       void (*applyFunc)(SimNode *, const Params *)) {
 
-      std::vector<SimJoint*>::iterator iter;
+      std::vector<std::shared_ptr<SimJoint> >::iterator iter;
       std::vector<int>::iterator jter;
       NodeMap::iterator nter;
       NodeId id2;
@@ -1096,12 +1096,12 @@ namespace mars {
         return;
       }
 
-      SimNode *editedNode = iter->second;
+      std::shared_ptr<SimNode> editedNode = iter->second;
       editedNode->rotateAtPoint(pivot, q, true);
 
       if (includeConnected) {
-        std::vector<SimJoint*> joints = control->joints->getSimJoints();
-        std::vector<SimJoint*>::iterator jter;
+        std::vector<std::shared_ptr<SimJoint> > joints = control->joints->getSimJoints();
+        std::vector<std::shared_ptr<SimJoint> >::iterator jter;
         for(jter=joints.begin(); jter!=joints.end(); ++jter) {
           if((*jter)->getIndex() == excludeJointId) {
             joints.erase(jter);
@@ -1132,12 +1132,12 @@ namespace mars {
         return;
       }
 
-      SimNode *editedNode = iter->second;
+      std::shared_ptr<SimNode> editedNode = iter->second;
       Vector offset = pos - editedNode->getPosition();
       editedNode->setPosition(pos, true);
 
-      std::vector<SimJoint*> joints = control->joints->getSimJoints();
-      std::vector<SimJoint*>::iterator jter;
+      std::vector<std::shared_ptr<SimJoint> > joints = control->joints->getSimJoints();
+      std::vector<std::shared_ptr<SimJoint> >::iterator jter;
       for(jter=joints.begin(); jter!=joints.end(); ++jter) {
         if((*jter)->getIndex() == excludeJointId) {
           joints.erase(jter);
@@ -1586,7 +1586,7 @@ namespace mars {
       return out;
     }
 
-    void NodeManager::pushToUpdate(SimNode* node) {
+    void NodeManager::pushToUpdate(std::shared_ptr<SimNode>  node) {
       MutexLocker locker(&iMutex);
       NodeMap::iterator iter = nodesToUpdate.find(node->getID());
       if (iter == nodesToUpdate.end())
@@ -1602,8 +1602,8 @@ namespace mars {
       if (iter == simNodes.end())
         return connected;
 
-      SimNode* current = iter->second;
-      std::vector<SimJoint*> simJoints = control->joints->getSimJoints();
+      std::shared_ptr<SimNode> current = iter->second;
+      std::vector<std::shared_ptr<SimJoint> > simJoints = control->joints->getSimJoints();
 
       if (current->getGroupID() != 0)
         for (iter = simNodes.begin(); iter != simNodes.end(); iter++)
@@ -1685,7 +1685,7 @@ namespace mars {
     void NodeManager::moveRelativeNodes(const SimNode &node, NodeMap *nodes,
                                         Vector v) {
       NodeMap::iterator iter;
-      SimNode* nextNode;
+      std::shared_ptr<SimNode>  nextNode;
 
       // TODO: doesn't this function need locking? no
       for (iter = nodes->begin(); iter != nodes->end(); iter++) {
@@ -1704,7 +1704,7 @@ namespace mars {
     void NodeManager::rotateRelativeNodes(const SimNode &node, NodeMap *nodes,
                                           Vector pivot, Quaternion rot) {
       NodeMap::iterator iter;
-      SimNode* nextNode;
+      std::shared_ptr<SimNode>  nextNode;
 
       // TODO: doesn't this function need locking? no
       for (iter = nodes->begin(); iter != nodes->end(); iter++) {

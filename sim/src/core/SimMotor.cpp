@@ -556,19 +556,19 @@ namespace mars {
 
 // from here on only getters and setters
 
-    void SimMotor::attachJoint(SimJoint *joint){
+    void SimMotor::attachJoint(std::shared_ptr<SimJoint> joint){
       myJoint = joint;
     }
 
-    void SimMotor::attachPlayJoint(SimJoint *joint){
+    void SimMotor::attachPlayJoint(std::shared_ptr<SimJoint> joint){
       myPlayJoint = joint;
     }
 
-    SimJoint* SimMotor::getJoint() const {
+    std::shared_ptr<SimJoint> SimMotor::getJoint() const {
       return myJoint;
     }
 
-    SimJoint* SimMotor::getPlayJoint() const {
+    std::shared_ptr<SimJoint> SimMotor::getPlayJoint() const {
       return myPlayJoint;
     }
 

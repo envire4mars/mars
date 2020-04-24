@@ -72,8 +72,8 @@ namespace mars {
       void updateController();
       void activate(void);
       void deactivate(void);
-      void attachJoint(SimJoint *joint);
-      void attachPlayJoint(SimJoint *joint);
+      void attachJoint(std::shared_ptr<SimJoint> joint);
+      void attachPlayJoint(std::shared_ptr<SimJoint> joint);
       void estimateCurrent();
       void estimateTemperature(interfaces::sReal time_ms);
       // the following two functions might be simple getters or carry out calculations

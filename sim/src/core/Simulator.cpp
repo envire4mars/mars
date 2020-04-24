@@ -29,14 +29,13 @@
 #include "config.h"
 #include "Simulator.h"
 #include "PhysicsMapper.h"
+#include "NodeManager.h"
+#include "JointManager.h"
+#include "MotorManager.h"
 #include "SensorManager.h"
 #include "ControllerManager.h"
 #include "EntityManager.h"
 #include "Controller.h"
-
-#include <mars/interfaces/sim/NodeManagerInterface.h>
-#include <mars/interfaces/sim/JointManagerInterface.h>
-#include <mars/interfaces/sim/MotorManagerInterface.h>
 
 #include <mars/utils/misc.h>
 #include <mars/interfaces/SceneParseException.h>
@@ -249,18 +248,14 @@ namespace mars {
         initCfgParams();
       }
 
-      //control->nodes = new NodeManager(control, libManager);
-      //control->joints = new JointManager(control);
-      //control->motors = new MotorManager(control);
-
       if (control->nodes == NULL) {
-        fprintf(stderr, "ERROR: No NodeManager is defined!\n");
+        control->nodes = new NodeManager(control, libManager);
       }
       if (control->joints == NULL) {
-        fprintf(stderr, "ERROR: No JointManager is defined!\n");
+        control->joints = new JointManager(control);
       }
       if (control->motors == NULL) {
-        fprintf(stderr, "ERROR: No MotorManager is defined!\n");
+        control->motors = new MotorManager(control);
       }
 
       control->sensors = new SensorManager(control);
@@ -927,7 +922,7 @@ namespace mars {
       physicsMutex.unlock();
     }
 
-    PhysicsInterface* Simulator::getPhysics(void) const {
+    std::shared_ptr<PhysicsInterface> Simulator::getPhysics(void) const {
       return physics;
     }
 
