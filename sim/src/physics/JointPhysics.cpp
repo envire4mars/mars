@@ -45,8 +45,8 @@ namespace mars {
      * \brief the constructor of the Joint physics 
      *   initialize the attributes of the object 
      */
-    JointPhysics::JointPhysics(PhysicsInterface *world){
-      theWorld = (WorldPhysics*)world;
+    JointPhysics::JointPhysics(std::shared_ptr<PhysicsInterface> world){
+      theWorld = std::static_pointer_cast<WorldPhysics>world;
       jointId = ball_motor = 0;
       jointCFM = 0.0;
       cfm = cfm1 = cfm2 = erp1 = erp2 = 0;
@@ -683,8 +683,8 @@ namespace mars {
     }
 
     ///set the world informations
-    void JointPhysics::setWorldObject(PhysicsInterface* world){
-      theWorld = (WorldPhysics*)world;
+    void JointPhysics::setWorldObject(std::shared_ptr<PhysicsInterface>  world){
+      theWorld = std::static_pointer_cast<WorldPhysics>world;
     }
 
     void JointPhysics::setJointAsMotor(int axis) {

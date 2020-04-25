@@ -238,7 +238,7 @@ namespace mars {
       }
 
       // create a node object
-      SimNode *newNode = new SimNode(control, *nodeS);
+      std::shared_ptr<SimNode> newNode = make_shared<SimNode>(control, *nodeS);
 
       // create the physical node data
       if(! (nodeS->noPhysical)){
@@ -247,8 +247,8 @@ namespace mars {
         if (!newNodeInterface->createNode(nodeS)) {
           // if no node was created in physics
           // delete the objects
-          delete newNode;
-          delete newNodeInterface;
+          newNode.reset();
+          newNodeInterface.reset();
           // and return false
           LOG_ERROR("NodeManager::addNode: No node was created in physics.");
           return INVALID_ID;
@@ -437,7 +437,7 @@ namespace mars {
      */
     void NodeManager::editNode(NodeData *nodeS, int changes) {
       NodeMap::iterator iter;
-      std::vector<SimJoint*>::iterator jter;
+      std::vector<std::shared_ptr<SimJoint> >::iterator jter;
       std::vector<int> gids;
       NodeMap::iterator it;
       Vector offset;
@@ -462,11 +462,11 @@ namespace mars {
           offset = editedNode->setPosition(nodeS->pos, true);
           // then move recursive all nodes that are connected through
           // joints to the node
-          std::vector<SimJoint*> joints = control->joints->getSimJoints();
+          std::vector<std::shared_ptr<SimJoint> > joints = control->joints->getSimJoints();
           if(editedNode->getGroupID())
             gids.push_back(editedNode->getGroupID());
           NodeMap nodes = simNodes;
-          std::vector<SimJoint*> jointsj = joints;
+          std::vector<std::shared_ptr<SimJoint> > jointsj = joints;
           nodes.erase(nodes.find(editedNode->getID()));
           moveNodeRecursive(nodeS->index, offset, &joints, &gids, &nodes);
         } else {
@@ -481,7 +481,7 @@ namespace mars {
           // new implementation in jointManager?
           NodeMap nodes = simNodes;
           NodeMap nodesj = simNodes;
-          std::vector<SimJoint*> jointsj = control->joints->getSimJoints();
+          std::vector<std::shared_ptr<SimJoint> > jointsj = control->joints->getSimJoints();
           nodes.erase(nodes.find(editedNode->getID()));
           moveRelativeNodes(*editedNode, &nodes, diff);
 
@@ -511,11 +511,11 @@ namespace mars {
           q = editedNode->setRotation(nodeS->rot, true);
           // then rotate recursive all nodes that are connected through
           // joints to the node
-          std::vector<SimJoint*> joints = control->joints->getSimJoints();
+          std::vector<std::shared_ptr<SimJoint> > joints = control->joints->getSimJoints();
           if(editedNode->getGroupID())
             gids.push_back(editedNode->getGroupID());
           NodeMap nodes = simNodes;
-          std::vector<SimJoint*> jointsj = control->joints->getSimJoints();
+          std::vector<std::shared_ptr<SimJoint> > jointsj = control->joints->getSimJoints();
           nodes.erase(nodes.find(editedNode->getID()));
           rotateNodeRecursive(nodeS->index, rotation_point, q, &joints,
                               &gids, &nodes);
@@ -537,7 +537,7 @@ namespace mars {
 
           NodeMap nodes = simNodes;
           NodeMap nodesj = simNodes;
-          std::vector<SimJoint*> jointsj = control->joints->getSimJoints();
+          std::vector<std::shared_ptr<SimJoint> > jointsj = control->joints->getSimJoints();
           nodes.erase(nodes.find(editedNode->getID()));
           rotateRelativeNodes(*editedNode, &nodes, rotation_point, q);
 
@@ -567,7 +567,7 @@ namespace mars {
           if (changes & EDIT_NODE_SIZE) {
           NodeMap nodes = simNodes;
           NodeMap nodesj = simNodes;
-          std::vector<SimJoint*> jointsj = control->joints->getSimJoints();
+          std::vector<std::shared_ptr<SimJoint> > jointsj = control->joints->getSimJoints();
           nodes.erase(nodes.find(editedNode->getID()));
           resetRelativeNodes(*editedNode, &nodes);
           iMutex.unlock(); // is this desired???
@@ -702,7 +702,7 @@ namespace mars {
           control->graphics->removeDrawObject(tmpNode->getGraphicsID());
           control->graphics->removeDrawObject(tmpNode->getGraphicsID2());
         }
-        delete tmpNode;
+        tmpNode.reset();
       }
       control->sim->sceneHasChanged(false);
     }
@@ -950,11 +950,11 @@ namespace mars {
 
     void NodeManager::resetRelativeJoints(const SimNode &node,
                                           NodeMap *nodes,
-                                          std::vector<SimJoint*> *joints,
+                                          std::vector<std::shared_ptr<SimJoint> > *joints,
                                           const Quaternion *rotate) {
       NodeMap::iterator iter;
-      std::vector<SimJoint*>::iterator jter;
-      std::vector<SimJoint*>::iterator jter2;
+      std::vector<std::shared_ptr<SimJoint> >::iterator jter;
+      std::vector<std::shared_ptr<SimJoint> >::iterator jter2;
       std::shared_ptr<SimNode>  nextNode;
 
       iMutex.lock();
@@ -987,10 +987,10 @@ namespace mars {
 
 
     void NodeManager::recursiveHelper(NodeId id, const Params *params,
-                                      std::vector<SimJoint*> *joints,
+                                      std::vector<std::shared_ptr<SimJoint> > *joints,
                                       std::vector<int> *gids,
                                       NodeMap *nodes,
-                                      void (*applyFunc)(SimNode *, const Params *)) {
+                                      void (*applyFunc)(std::shared_ptr<SimNode> , const Params *)) {
 
       std::vector<std::shared_ptr<SimJoint> >::iterator iter;
       std::vector<int>::iterator jter;
@@ -1065,20 +1065,20 @@ namespace mars {
       }
     }
 
-    void NodeManager::applyMove(SimNode *node, const Params *params)
+    void NodeManager::applyMove(std::shared_ptr<SimNode> node, const Params *params)
     {
       const Vector offset = dynamic_cast<const MoveParams*>(params)->offset;
       node->setPositionOffset(offset);
     }
 
-    void NodeManager::applyRotation(SimNode *node, const Params *params)
+    void NodeManager::applyRotation(std::shared_ptr<SimNode> node, const Params *params)
     {
       const RotationParams *p = dynamic_cast<const RotationParams*>(params);
       node->rotateAtPoint(p->rotation_point, p->rotation, true);
     }
 
     void NodeManager::moveNodeRecursive(NodeId id, const Vector &offset,
-                                        std::vector<SimJoint*> *joints,
+                                        std::vector<std::shared_ptr<SimJoint> > *joints,
                                         std::vector<int> *gids,
                                         NodeMap *nodes) {
       MoveParams params;
@@ -1160,7 +1160,7 @@ namespace mars {
     void NodeManager::rotateNodeRecursive(NodeId id,
                                           const Vector &rotation_point,
                                           const Quaternion &rotation,
-                                          std::vector<SimJoint*> *joints,
+                                          std::vector<std::shared_ptr<SimJoint> > *joints,
                                           std::vector<int> *gids,
                                           NodeMap *nodes) {
       RotationParams params;
@@ -1900,7 +1900,7 @@ namespace mars {
       }
     }
 
-    void NodeManager::changeNode(SimNode *editedNode, NodeData *nodeS) {
+    void NodeManager::changeNode(std::shared_ptr<SimNode> editedNode, NodeData *nodeS) {
       NodeData sNode = editedNode->getSNode();
       if(control->graphics) {
         Vector scale;

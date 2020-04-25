@@ -150,7 +150,7 @@ namespace mars {
       void setMaterial(const interfaces::MaterialData &material);
       void setPhysicalState(const interfaces::nodeState &state);
       void setFromSNode(const interfaces::NodeData &sNode);
-      void setInterface(interfaces::NodeInterface *_interface); ///< Sets the node interface object.
+      void setInterface(std::shared_ptr<interfaces::NodeInterface>_interface); ///< Sets the node interface object.
       void setRelativePosition(const interfaces::NodeData &node);
       void setContactParams(const interfaces::contact_params &cp);
       void setLinearVelocity(const utils::Vector &vel);

@@ -37,12 +37,15 @@ namespace mars {
       return std::make_shared<PhysicsInterface>(WorldPhysics(control));
     }
 
-    std::shared_pt<NodeInterface> PhysicsMapper::newNodePhysics(std::shared_ptr<PhysicsInterface> worldPhysics) {
-      return std::make_shared<NodeInterface>(NodePhysics(worldPhysics));
+    std::shared_ptr<NodeInterface> PhysicsMapper::newNodePhysics(std::shared_ptr<PhysicsInterface> worldPhysics) {
+      // Create a nodePhysics with the worldPhysics as constructor parameter, then downcast to a Node interface and return
+      std::shared_ptr<NodePhysics> nodePhysics = std::make_shared<NodePhysics>(worldPhysics);
+      return std::static_pointer_cast<NodeInterface>(nodePhysics);
     }
 
     std::shared_ptr<JointInterface> PhysicsMapper::newJointPhysics(std::shared_ptr<PhysicsInterface> worldPhysics) {
-      return std::make_shared<JointInterface>(JointPhysics(worldPhysics));
+      std::shared_ptr<JointPhysics> jointPhysics = std::make_shared<JointPhysics>(worldPhysics);
+      return std::static_pointer_cast<JointInterface>(jointPhysics);
     }
 
   } // end of namespace sim
