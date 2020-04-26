@@ -461,7 +461,7 @@ namespace mars {
         // pass speed (position/speed control) or torque to the attached
         // joint's setSpeed1/2 or setTorque1/2 methods
 
-        (myJoint->*setJointControlParameter)(*controlParameter, sMotor.axis);
+        (myJoint.get()->*setJointControlParameter)(*controlParameter, sMotor.axis);
         //for mimic in myJoint->mimics:
         //  mimic->*setJointControlParameter)(mimic_multiplier*controlParameter, axis);
       }

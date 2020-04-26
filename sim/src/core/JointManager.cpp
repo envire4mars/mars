@@ -68,8 +68,8 @@ namespace mars {
       std::vector<std::shared_ptr<SimNode>>::iterator iter;
       std::shared_ptr<SimNode> node1 = 0;
       std::shared_ptr<SimNode> node2 = 0;
-      NodeInterface *i_node1 = 0;
-      NodeInterface *i_node2 = 0;
+      std::shared_ptr<NodeInterface> i_node1 = 0;
+      std::shared_ptr<NodeInterface> i_node2 = 0;
       Vector an;
 
       if (!reload) {

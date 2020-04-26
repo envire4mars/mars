@@ -734,7 +734,7 @@ namespace mars {
     const Vector NodeManager::getCenterOfMass(const std::vector<NodeId> &ids) const {
       std::vector<NodeId>::const_iterator iter;
       NodeMap::const_iterator nter;
-      std::vector<NodeInterface*> pNodes;
+      std::vector<std::shared_ptr<NodeInterface>> pNodes;
 
       MutexLocker locker(&iMutex);
 
