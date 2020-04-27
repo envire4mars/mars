@@ -35,6 +35,7 @@
 
 #include <mars/utils/Vector.h>
 
+#include <memory>
 #include <vector>
 
 namespace mars {

@@ -69,7 +69,7 @@ namespace mars {
      */
     NodePhysics::NodePhysics(std::shared_ptr<PhysicsInterface> world) {
       // At this moment we have not much things to do here. ^_^
-      theWorld = std::static_pointer_cast<WorldPhysics>(world);
+      theWorld = std::dynamic_pointer_cast<WorldPhysics>(world);
       nBody = 0;
       nGeom = 0;
       myVertices = 0;
@@ -585,7 +585,7 @@ namespace mars {
      * I don't think that we need this function.
      */
     void NodePhysics::setWorldObject(std::shared_ptr<PhysicsInterface>  world) {
-      theWorld = std::static_pointer_cast<WorldPhysics>(world);
+      theWorld = std::dynamic_pointer_cast<WorldPhysics>(world);
     }
 
     /**

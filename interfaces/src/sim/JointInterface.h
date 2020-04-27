@@ -36,8 +36,8 @@ namespace mars {
       virtual ~JointInterface() {}
       // create the joint using the joint structure given as argument
       virtual bool createJoint(JointData *joint,
-                               const NodeInterface *node1, 
-                               const NodeInterface *i_node2) = 0; // physic interfaces for the node
+                               const std::shared_ptr<NodeInterface> node1, 
+                               const std::shared_ptr<NodeInterface> i_node2) = 0; // physic interfaces for the node
       virtual void getAnchor(utils::Vector *anchor) const = 0;
       virtual void setAnchor(const utils::Vector &anchor) = 0;
       virtual void setAxis(const utils::Vector &axis) = 0;

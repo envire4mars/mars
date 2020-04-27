@@ -42,8 +42,8 @@ namespace mars {
       ///create Joint getting as argument the JointData which give the 
       ///joint informations.
       virtual bool createJoint(interfaces::JointData *joint,
-                               const interfaces::NodeInterface *node1, 
-                               const interfaces::NodeInterface *node2);
+                               const std::shared_ptr<interfaces::NodeInterface> node1, 
+                               const std::shared_ptr<interfaces::NodeInterface> node2);
       ///get the anchor of the joint
       virtual void getAnchor(utils::Vector* anchor) const;
       /// set the anchor i.e. the position where the joint is created of the joint 

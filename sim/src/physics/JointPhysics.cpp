@@ -107,8 +107,8 @@ namespace mars {
      * \brief create the joint with the informations giving from jointS 
      * 
      */
-    bool JointPhysics::createJoint(JointData *jointS, const NodeInterface *node1,
-                                   const NodeInterface *node2) {
+    bool JointPhysics::createJoint(JointData *jointS, const std::shared_ptr<NodeInterface> node1,
+                                   const std::shared_ptr<NodeInterface> node2) {
 #ifdef _VERIFY_WORLD_
       fprintf(stderr, "joint %d  ;  %d  ;  %d  ;  %.4f, %.4f, %.4f  ;  %.4f, %.4f, %.4f\n",
               jointS->index, jointS->nodeIndex1, jointS->nodeIndex2,
@@ -119,8 +119,8 @@ namespace mars {
       if ( theWorld && theWorld->existsWorld() ) {
         //get the bodies from the interfaces nodes
         //here we have to make some verifications
-        const NodePhysics *n1= static_cast<const NodePhysics*>(node1);
-        const NodePhysics *n2= static_cast<const NodePhysics*>(node2);
+        const std::shared_ptr<NodePhysics> n1 = std::dynamic_pointer_cast<NodePhysics>(node1);
+        const std::shared_ptr<NodePhysics> n2 = std::dynamic_pointer_cast<NodePhysics>(node2);
         dBodyID b1 = 0, b2 = 0;
 
         calculateCfmErp(jointS);

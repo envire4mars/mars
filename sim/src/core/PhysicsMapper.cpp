@@ -34,7 +34,8 @@ namespace mars {
     using namespace mars::interfaces;
 
     std::shared_ptr<PhysicsInterface> PhysicsMapper::newWorldPhysics(ControlCenter *control) {
-      return std::make_shared<PhysicsInterface>(WorldPhysics(control));
+      std::shared_ptr<WorldPhysics> worldPhysics = std::make_shared<WorldPhysics>(control);
+      return std::static_pointer_cast<PhysicsInterface>(worldPhysics);
     }
 
     std::shared_ptr<NodeInterface> PhysicsMapper::newNodePhysics(std::shared_ptr<PhysicsInterface> worldPhysics) {
